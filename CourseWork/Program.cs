@@ -37,6 +37,7 @@ namespace CourseWork
                 10500, 762500, 2000, 1000
             };
 
+            // Create base variable string names
             string[] basis = new string[] { "x5", "x6", "x7", "x8" };
 
             while (true)
@@ -89,7 +90,12 @@ namespace CourseWork
                 {
                     if (systemParameters[i, deltaLocation] != 0)
                     {
+                        // if we are not dividing by 0
                         possibleKeyNumbers.Add(values[i] / systemParameters[i, deltaLocation]);
+                    } else
+                    {
+                        // add an enourmous number to take account for the row
+                        possibleKeyNumbers.Add(decimal.MaxValue);
                     }
                 }
 
@@ -151,20 +157,16 @@ namespace CourseWork
             // Now we will calculate the first deltas              
             for (int i = 0; i < 8; i++)
             {
-                decimal delta = systemParameters[0, i] * functionParameters[int.Parse(resultString0) - 1]
-                              + systemParameters[1, i] * functionParameters[int.Parse(resultString1) - 1]
-                              + systemParameters[2, i] * functionParameters[int.Parse(resultString2) - 1]
-                              + systemParameters[3, i] * functionParameters[int.Parse(resultString3) - 1]
-                              - functionParameters[i];
+                decimal delta = Math.Round(systemParameters[0, i] * functionParameters[int.Parse(resultString0) - 1] + systemParameters[1, i] * functionParameters[int.Parse(resultString1) - 1] + systemParameters[2, i] * functionParameters[int.Parse(resultString2) - 1] + systemParameters[3, i] * functionParameters[int.Parse(resultString3) - 1] - functionParameters[i], 3);
 
                 deltas.Add(delta);
             }
 
             // Calculate the sum and draw the table
-            decimal currentMaxSum = values[0] * functionParameters[int.Parse(resultString0) - 1]
+            decimal currentMaxSum = Math.Round(values[0] * functionParameters[int.Parse(resultString0) - 1]
                                  + values[1] * functionParameters[int.Parse(resultString1) - 1]
                                  + values[2] * functionParameters[int.Parse(resultString2) - 1]
-                                 + values[3] * functionParameters[int.Parse(resultString3) - 1];
+                                 + values[3] * functionParameters[int.Parse(resultString3) - 1], 3);
 
             table.AddRow("    ", "Sum = " + currentMaxSum.ToString("N2"), deltas[0].ToString("N2"), deltas[1].ToString("N2"), deltas[2].ToString("N2"), deltas[3].ToString("N2"), deltas[4].ToString("N2"), deltas[5].ToString("N2"), deltas[6].ToString("N2"), deltas[7].ToString("N2"));
             table.Write();
@@ -229,11 +231,11 @@ namespace CourseWork
                 decimal value;
                 if (i == rowLocation)
                 {
-                    value = values[i] / keyNumber;
+                    value = Math.Round(values[i] / keyNumber, 3);
                 }
                 else
                 {
-                    value = (values[i] * keyNumber - values[rowLocation] * systemParameters[i, deltaLocation]) / keyNumber;
+                    value = Math.Round((values[i] * keyNumber - values[rowLocation] * systemParameters[i, deltaLocation]) / keyNumber, 3);
                 }
                 values.Add(value);
             }
@@ -255,7 +257,7 @@ namespace CourseWork
         {
             for (int i = 0; i < 8; i++)
             {
-                systemParameters[rowLocation, i] = systemParameters[rowLocation, i] / keyNumber;
+                systemParameters[rowLocation, i] = Math.Round(systemParameters[rowLocation, i] / keyNumber, 3);
             }
 
             for (int row = 0; row < 4; row++)
@@ -269,7 +271,7 @@ namespace CourseWork
                     decimal multiplyTimesDeltaRow = systemParameters[row, deltaLocation];
                     for (int col = 0; col < 8; col++)
                     {
-                        systemParameters[row, col] = systemParameters[row, col] - multiplyTimesDeltaRow * systemParameters[rowLocation, col];
+                        systemParameters[row, col] = Math.Round(systemParameters[row, col] - multiplyTimesDeltaRow * systemParameters[rowLocation, col], 3);
                     }
                 }
             }
